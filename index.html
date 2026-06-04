@@ -899,7 +899,7 @@ body.anim-dynamic .reveal { transform: translateY(40px); }
     </div>
 
     <div class="contact-form reveal" data-d="1">
-      <form id="contactForm">
+      <form id="contactForm" action="https://formspree.io/f/mqeoknpw" method="POST">
         <div class="form-row">
           <div class="form-group">
             <label for="prenom">Prénom</label>
@@ -1147,10 +1147,11 @@ body.anim-dynamic .reveal { transform: translateY(40px); }
   var f=document.getElementById('contactForm');
   if(!f)return;
   f.addEventListener('submit',function(e){
-    e.preventDefault();
+    // Garder la soumission normale vers Formspree
     var d={prenom:document.getElementById('prenom').value.trim(),nom:document.getElementById('nom').value.trim(),email:document.getElementById('email').value.trim(),tel:document.getElementById('tel').value.trim(),vehicule:document.getElementById('marque').value.trim(),annee:document.getElementById('annee').value.trim(),prestation:document.getElementById('prestation').value,message:document.getElementById('message').value.trim()};
-    try{var e=JSON.parse(localStorage.getItem('s16_entries')||'[]');var id=Date.now().toString(36)+Math.random().toString(36).slice(2);e.unshift(Object.assign({id:id,statut:'nouveau',note:'',date:new Date().toISOString()},d));localStorage.setItem('s16_entries',JSON.stringify(e));}catch(err){}
-    this.style.display='none';document.getElementById('formSuccess').classList.add('show');
+    try{var entries=JSON.parse(localStorage.getItem('s16_entries')||'[]');var id=Date.now().toString(36)+Math.random().toString(36).slice(2);entries.unshift(Object.assign({id:id,statut:'nouveau',note:'',date:new Date().toISOString()},d));localStorage.setItem('s16_entries',JSON.stringify(entries));}catch(err){}
+    // Afficher le succès après 500ms (le temps que Formspree reçoive)
+    setTimeout(function(){document.getElementById('contactForm').style.display='none';document.getElementById('formSuccess').classList.add('show');},500);
   });
 })();
 
