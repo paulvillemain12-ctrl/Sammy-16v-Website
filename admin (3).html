@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Sammy 16 Soupapes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #E0200E;
+  --orange: #F56A00;
+  --orange-light: #FF8C2A;
+  --green: #22C55E;
+  --yellow: #EAB308;
+  --bg: #0A0A0A;
+  --bg2: #111111;
+  --bg3: #181818;
+  --border: rgba(255,255,255,0.07);
+  --text: #F0EDE8;
+  --muted: #7A7570;
+  --font-head: 'Barlow Condensed', sans-serif;
+  --font-body: 'Barlow', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* LOGIN */
+#loginScreen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 32px;
+}
+.login-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 380px;
+}
+.login-title {
+  font-family: var(--font-head);
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+.login-title span { color: var(--orange); }
+.login-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+.login-label {
+  font-family: var(--font-head);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); display: block; margin-bottom: 8px;
+}
+.login-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  padding: 13px 15px;
+  outline: none;
+  transition: border-color 0.2s;
+  border-radius: 0;
+  margin-bottom: 20px;
+}
+.login-input:focus { border-color: rgba(245,106,0,0.6); }
+.login-btn {
+  width: 100%;
+  font-family: var(--font-head);
+  font-size: 15px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  background: var(--orange); color: var(--bg);
+  border: none; padding: 15px;
+  cursor: pointer; transition: background 0.2s;
+}
+.login-btn:hover { background: var(--orange-light); }
+.login-error {
+  font-size: 13px; color: var(--red);
+  margin-top: 12px; display: none; text-align: center;
+}
+.login-error.show { display: block; }
+
+/* APP */
+#app { display: none; }
+
+/* TOP BAR */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 60px;
+  background: rgba(10,10,10,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.topbar-logo {
+  font-family: var(--font-head);
+  font-size: 18px; font-weight: 900;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.topbar-logo span { color: var(--orange); }
+.topbar-right { display: flex; align-items: center; gap: 20px; }
+.topbar-site {
+  font-family: var(--font-head);
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  transition: color 0.2s;
+}
+.topbar-site:hover { color: var(--text); }
+.logout-btn {
+  font-family: var(--font-head);
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); padding: 7px 14px;
+  cursor: pointer; transition: all 0.2s;
+}
+.logout-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+/* MAIN */
+main { padding: 32px; max-width: 1400px; margin: 0 auto; }
+
+/* STATS ROW */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 20px 22px;
+}
+.stat-label-sm {
+  font-family: var(--font-head);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 6px;
+}
+.stat-value {
+  font-family: var(--font-head);
+  font-size: 38px; font-weight: 900; line-height: 1;
+}
+.stat-value.orange { color: var(--orange); }
+.stat-value.yellow { color: var(--yellow); }
+.stat-value.green { color: var(--green); }
+.stat-value.white { color: var(--text); }
+
+/* TOOLBAR */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.toolbar-title {
+  font-family: var(--font-head);
+  font-size: 22px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  margin-right: auto;
+}
+.filter-select {
+  font-family: var(--font-head);
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 8px 32px 8px 12px;
+  outline: none; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237A7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: border-color 0.2s;
+}
+.filter-select:focus { border-color: rgba(245,106,0,0.5); }
+.filter-select option { background: var(--bg2); }
+
+.add-btn {
+  font-family: var(--font-head);
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  background: var(--orange); color: var(--bg);
+  border: none; padding: 9px 20px;
+  cursor: pointer; transition: background 0.2s;
+  white-space: nowrap;
+}
+.add-btn:hover { background: var(--orange-light); }
+
+/* TABLE */
+.table-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  font-family: var(--font-head);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted);
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.02); }
+td {
+  padding: 14px 16px;
+  font-size: 14px;
+  vertical-align: middle;
+}
+td.name {
+  font-family: var(--font-head);
+  font-size: 16px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+td.vehicle { color: var(--muted); font-size: 13px; }
+td.date { color: var(--muted); font-size: 12px; white-space: nowrap; }
+td.presta { font-size: 13px; }
+
+/* BADGE STATUT */
+.badge {
+  font-family: var(--font-head);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 4px 10px; display: inline-block;
+  cursor: pointer; user-select: none;
+  border: 1px solid;
+  transition: opacity 0.2s;
+}
+.badge:hover { opacity: 0.8; }
+.badge.nouveau { color: var(--orange); border-color: rgba(245,106,0,0.35); background: rgba(245,106,0,0.08); }
+.badge.en-cours { color: var(--yellow); border-color: rgba(234,179,8,0.35); background: rgba(234,179,8,0.08); }
+.badge.traite   { color: var(--green);  border-color: rgba(34,197,94,0.35);  background: rgba(34,197,94,0.08); }
+
+/* ACTIONS */
+.row-actions { display: flex; gap: 8px; align-items: center; }
+.icon-btn {
+  width: 32px; height: 32px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.icon-btn:hover { border-color: rgba(255,255,255,0.25); color: var(--text); }
+.icon-btn.delete:hover { border-color: rgba(224,32,14,0.5); color: var(--red); }
+
+/* NOTE PREVIEW */
+.note-preview {
+  font-size: 12px; color: var(--muted);
+  max-width: 200px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+  font-style: italic;
+}
+.no-note { color: rgba(122,117,112,0.35); font-style: italic; font-size: 12px; }
+
+/* EMPTY */
+.empty-state {
+  text-align: center; padding: 60px 20px;
+  color: var(--muted);
+}
+.empty-state p {
+  font-family: var(--font-head);
+  font-size: 18px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  margin-bottom: 8px; color: rgba(122,117,112,0.5);
+}
+.empty-state span { font-size: 13px; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.75);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--bg2);
+  border: 1px solid rgba(245,106,0,0.2);
+  padding: 36px 32px;
+  width: 100%; max-width: 540px;
+  max-height: 90vh; overflow-y: auto;
+  transform: translateY(16px); transition: transform 0.2s;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-title {
+  font-family: var(--font-head);
+  font-size: 24px; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  margin-bottom: 24px;
+}
+.modal-title span { color: var(--orange); }
+.modal-label {
+  font-family: var(--font-head);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); display: block; margin-bottom: 7px;
+}
+.modal-input, .modal-select, .modal-textarea {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px; padding: 11px 13px;
+  outline: none; transition: border-color 0.2s;
+  -webkit-appearance: none; appearance: none;
+  border-radius: 0; margin-bottom: 16px;
+}
+.modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: rgba(245,106,0,0.6); }
+.modal-textarea { resize: vertical; min-height: 90px; }
+.modal-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237A7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; cursor: pointer;
+}
+.modal-select option { background: var(--bg3); }
+.modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.modal-footer { display: flex; gap: 12px; margin-top: 8px; }
+.modal-save {
+  flex: 1;
+  font-family: var(--font-head);
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  background: var(--orange); color: var(--bg);
+  border: none; padding: 14px;
+  cursor: pointer; transition: background 0.2s;
+}
+.modal-save:hover { background: var(--orange-light); }
+.modal-cancel {
+  font-family: var(--font-head);
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); padding: 14px 20px;
+  cursor: pointer; transition: all 0.2s;
+}
+.modal-cancel:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+/* MODAL DETAIL (lecture) */
+.detail-block { margin-bottom: 20px; }
+.detail-block-label {
+  font-family: var(--font-head);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 4px;
+}
+.detail-block-value { font-size: 14px; color: var(--text); line-height: 1.65; }
+.detail-block-value.italic { font-style: italic; color: rgba(240,237,232,0.7); }
+
+/* CONTACT PILLS */
+.contact-pills { display: flex; flex-direction: column; gap: 6px; }
+.contact-pill {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--muted);
+}
+.contact-pill a { color: var(--orange); text-decoration: none; }
+.contact-pill a:hover { text-decoration: underline; }
+
+/* DELETE CONFIRM */
+.delete-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.8);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.15s;
+}
+.delete-overlay.open { opacity: 1; pointer-events: all; }
+.delete-box {
+  background: var(--bg2);
+  border: 1px solid rgba(224,32,14,0.3);
+  padding: 32px; max-width: 360px; width: 100%; text-align: center;
+}
+.delete-title {
+  font-family: var(--font-head);
+  font-size: 20px; font-weight: 900;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.delete-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+.delete-actions { display: flex; gap: 10px; }
+.delete-confirm {
+  flex: 1;
+  font-family: var(--font-head);
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  background: var(--red); color: white;
+  border: none; padding: 12px; cursor: pointer;
+}
+.delete-cancel {
+  font-family: var(--font-head);
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); padding: 12px 18px; cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  main { padding: 16px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .modal-row { grid-template-columns: 1fr; }
+  .topbar { padding: 0 16px; }
+  .topbar-site { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-title">Sammy <span>16 Soupapes</span></div>
+    <p class="login-sub">Espace administration</p>
+    <label class="login-label" for="loginPwd">Mot de passe</label>
+    <input type="password" id="loginPwd" class="login-input" placeholder="••••••••" autocomplete="current-password">
+    <button class="login-btn" onclick="doLogin()">Accéder</button>
+    <p class="login-error" id="loginError">Mot de passe incorrect.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <nav class="topbar">
+    <div class="topbar-logo">Admin <span>/</span> Sammy</div>
+    <div class="topbar-right">
+      <a href="index.html" class="topbar-site">Voir le site</a>
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label-sm">Total demandes</div>
+        <div class="stat-value white" id="statTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label-sm">Nouvelles</div>
+        <div class="stat-value orange" id="statNouveau">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label-sm">En cours</div>
+        <div class="stat-value yellow" id="statEnCours">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label-sm">Traitées</div>
+        <div class="stat-value green" id="statTraite">0</div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <div class="toolbar-title">Demandes</div>
+      <select class="filter-select" id="filterStatut" onchange="renderTable()">
+        <option value="all">Tous les statuts</option>
+        <option value="nouveau">Nouveau</option>
+        <option value="en-cours">En cours</option>
+        <option value="traite">Traité</option>
+      </select>
+      <select class="filter-select" id="filterPresta" onchange="renderTable()">
+        <option value="all">Toutes prestations</option>
+        <option>Stage 1</option>
+        <option>Stage 2</option>
+        <option>Suppression FAP</option>
+        <option>Suppression EGR</option>
+        <option>Suppression AdBlue</option>
+        <option>Conversion Flexfuel E85</option>
+        <option>Immo Off / Boitier</option>
+        <option>Diagnostic</option>
+        <option>Je ne sais pas encore</option>
+      </select>
+      <button class="add-btn" onclick="openAdd()">+ Ajouter manuellement</button>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Véhicule</th>
+            <th>Prestation</th>
+            <th>Contact</th>
+            <th>Date</th>
+            <th>Statut</th>
+            <th>Note</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <p>Aucune demande</p>
+        <span>Les demandes du formulaire apparaissent ici automatiquement.</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL AJOUT/ÉDITION -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Nouvelle <span>demande</span></div>
+    <div class="modal-row">
+      <div>
+        <label class="modal-label">Prénom</label>
+        <input type="text" class="modal-input" id="fPrenom" placeholder="Thomas">
+      </div>
+      <div>
+        <label class="modal-label">Nom</label>
+        <input type="text" class="modal-input" id="fNom" placeholder="Martin">
+      </div>
+    </div>
+    <div class="modal-row">
+      <div>
+        <label class="modal-label">Email</label>
+        <input type="email" class="modal-input" id="fEmail" placeholder="thomas@mail.com">
+      </div>
+      <div>
+        <label class="modal-label">Téléphone / WhatsApp</label>
+        <input type="text" class="modal-input" id="fTel" placeholder="06 XX XX XX XX">
+      </div>
+    </div>
+    <div class="modal-row">
+      <div>
+        <label class="modal-label">Véhicule</label>
+        <input type="text" class="modal-input" id="fVehicule" placeholder="BMW 320d F30">
+      </div>
+      <div>
+        <label class="modal-label">Année / KM</label>
+        <input type="text" class="modal-input" id="fAnnee" placeholder="2018 — 95 000 km">
+      </div>
+    </div>
+    <label class="modal-label">Prestation</label>
+    <select class="modal-select" id="fPresta" style="margin-bottom:16px;">
+      <option value="">Non précisée</option>
+      <option>Stage 1</option>
+      <option>Stage 2</option>
+      <option>Suppression FAP</option>
+      <option>Suppression EGR</option>
+      <option>Suppression AdBlue</option>
+      <option>Conversion Flexfuel E85</option>
+      <option>Immo Off / Boitier</option>
+      <option>Diagnostic</option>
+      <option>Je ne sais pas encore</option>
+    </select>
+    <label class="modal-label">Message / Détails</label>
+    <textarea class="modal-textarea" id="fMessage" placeholder="Informations complémentaires..."></textarea>
+    <label class="modal-label">Statut</label>
+    <select class="modal-select" id="fStatut" style="margin-bottom:16px;">
+      <option value="nouveau">Nouveau</option>
+      <option value="en-cours">En cours</option>
+      <option value="traite">Traité</option>
+    </select>
+    <label class="modal-label">Note interne</label>
+    <textarea class="modal-textarea" id="fNote" placeholder="Notes personnelles (devis envoyé, RDV fixé...)"></textarea>
+    <div class="modal-footer">
+      <button class="modal-save" onclick="saveEntry()">Enregistrer</button>
+      <button class="modal-cancel" onclick="closeModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DÉTAIL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <div class="modal-title"><span id="dTitle">Détail</span></div>
+    <div class="detail-block">
+      <div class="detail-block-label">Client</div>
+      <div class="detail-block-value" id="dNom"></div>
+    </div>
+    <div class="contact-pills" id="dContact" style="margin-bottom:20px;"></div>
+    <div class="detail-block">
+      <div class="detail-block-label">Véhicule</div>
+      <div class="detail-block-value" id="dVehicule"></div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-block-label">Prestation souhaitée</div>
+      <div class="detail-block-value" id="dPresta"></div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-block-label">Message</div>
+      <div class="detail-block-value italic" id="dMessage"></div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-block-label">Note interne</div>
+      <div class="detail-block-value italic" id="dNote"></div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-block-label">Date de réception</div>
+      <div class="detail-block-value" id="dDate"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-save" id="dEditBtn">Modifier</button>
+      <button class="modal-cancel" onclick="closeDetail()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div class="delete-overlay" id="deleteOverlay">
+  <div class="delete-box">
+    <div class="delete-title">Supprimer ?</div>
+    <p class="delete-sub">Cette demande sera définitivement effacée.</p>
+    <div class="delete-actions">
+      <button class="delete-confirm" id="deleteConfirmBtn">Supprimer</button>
+      <button class="delete-cancel" onclick="closeDelete()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──
+const PASSWORD = 'sammy16v'; // À changer
+
+const STATUS_CYCLE = { 'nouveau': 'en-cours', 'en-cours': 'traite', 'traite': 'nouveau' };
+const STATUS_LABELS = { 'nouveau': 'Nouveau', 'en-cours': 'En cours', 'traite': 'Traité' };
+
+let entries = [];
+let editingId = null;
+let deletingId = null;
+let detailId = null;
+
+// ── AUTH ──
+function doLogin() {
+  const pwd = document.getElementById('loginPwd').value;
+  if (pwd === PASSWORD) {
+    sessionStorage.setItem('s16_auth', '1');
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadEntries();
+  } else {
+    document.getElementById('loginError').classList.add('show');
+    document.getElementById('loginPwd').value = '';
+  }
+}
+document.getElementById('loginPwd').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+function logout() {
+  sessionStorage.removeItem('s16_auth');
+  location.reload();
+}
+// auto-login si session valide
+if (sessionStorage.getItem('s16_auth') === '1') {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+
+// ── DATA ──
+function loadEntries() {
+  try { entries = JSON.parse(localStorage.getItem('s16_entries') || '[]'); } catch { entries = []; }
+  renderStats();
+  renderTable();
+}
+function saveEntries() {
+  localStorage.setItem('s16_entries', JSON.stringify(entries));
+  renderStats();
+  renderTable();
+}
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+// Expose global pour le site principal
+window.S16_addEntry = function(data) {
+  const entry = {
+    id: genId(),
+    prenom: data.prenom || '',
+    nom: data.nom || '',
+    email: data.email || '',
+    tel: data.tel || '',
+    vehicule: data.vehicule || '',
+    annee: data.annee || '',
+    prestation: data.prestation || '',
+    message: data.message || '',
+    statut: 'nouveau',
+    note: '',
+    date: new Date().toISOString()
+  };
+  entries.unshift(entry);
+  saveEntries();
+};
+
+// ── STATS ──
+function renderStats() {
+  document.getElementById('statTotal').textContent = entries.length;
+  document.getElementById('statNouveau').textContent = entries.filter(e => e.statut === 'nouveau').length;
+  document.getElementById('statEnCours').textContent = entries.filter(e => e.statut === 'en-cours').length;
+  document.getElementById('statTraite').textContent = entries.filter(e => e.statut === 'traite').length;
+}
+
+// ── TABLE ──
+function renderTable() {
+  const filterStatut = document.getElementById('filterStatut').value;
+  const filterPresta = document.getElementById('filterPresta').value;
+
+  let filtered = entries.filter(e => {
+    if (filterStatut !== 'all' && e.statut !== filterStatut) return false;
+    if (filterPresta !== 'all' && e.prestation !== filterPresta) return false;
+    return true;
+  });
+
+  const tbody = document.getElementById('tableBody');
+  const empty = document.getElementById('emptyState');
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = filtered.map(e => {
+    const nom = [e.prenom, e.nom].filter(Boolean).join(' ') || '—';
+    const dateStr = e.date ? new Date(e.date).toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', year:'2-digit' }) : '—';
+    const vehicule = [e.vehicule, e.annee].filter(Boolean).join(' — ') || '—';
+    const note = e.note ? `<span class="note-preview">${escHtml(e.note)}</span>` : `<span class="no-note">—</span>`;
+    const contact = e.email
+      ? `<a href="mailto:${escHtml(e.email)}" style="color:var(--orange);font-size:13px;">${escHtml(e.email)}</a>`
+      : `<span style="color:var(--muted);font-size:13px;">—</span>`;
+
+    return `<tr>
+      <td class="name"><a href="#" onclick="openDetail('${e.id}');return false;" style="color:inherit;text-decoration:none;">${escHtml(nom)}</a></td>
+      <td class="vehicle">${escHtml(vehicule)}</td>
+      <td class="presta">${escHtml(e.prestation || '—')}</td>
+      <td>${contact}</td>
+      <td class="date">${dateStr}</td>
+      <td><span class="badge ${e.statut}" onclick="cycleStatus('${e.id}')" title="Cliquer pour changer">${STATUS_LABELS[e.statut]}</span></td>
+      <td>${note}</td>
+      <td>
+        <div class="row-actions">
+          <button class="icon-btn" onclick="openEdit('${e.id}')" title="Modifier">✎</button>
+          <button class="icon-btn delete" onclick="askDelete('${e.id}')" title="Supprimer">✕</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── STATUT CYCLE ──
+function cycleStatus(id) {
+  const e = entries.find(x => x.id === id);
+  if (!e) return;
+  e.statut = STATUS_CYCLE[e.statut] || 'nouveau';
+  saveEntries();
+}
+
+// ── MODAL AJOUT/EDIT ──
+function openAdd() {
+  editingId = null;
+  document.getElementById('modalTitle').innerHTML = 'Nouvelle <span>demande</span>';
+  clearForm();
+  document.getElementById('editModal').classList.add('open');
+}
+function openEdit(id) {
+  const e = entries.find(x => x.id === id);
+  if (!e) return;
+  editingId = id;
+  document.getElementById('modalTitle').innerHTML = 'Modifier la <span>demande</span>';
+  document.getElementById('fPrenom').value = e.prenom || '';
+  document.getElementById('fNom').value = e.nom || '';
+  document.getElementById('fEmail').value = e.email || '';
+  document.getElementById('fTel').value = e.tel || '';
+  document.getElementById('fVehicule').value = e.vehicule || '';
+  document.getElementById('fAnnee').value = e.annee || '';
+  document.getElementById('fPresta').value = e.prestation || '';
+  document.getElementById('fMessage').value = e.message || '';
+  document.getElementById('fStatut').value = e.statut || 'nouveau';
+  document.getElementById('fNote').value = e.note || '';
+  closeDetail();
+  document.getElementById('editModal').classList.add('open');
+}
+function clearForm() {
+  ['fPrenom','fNom','fEmail','fTel','fVehicule','fAnnee','fMessage','fNote'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fPresta').value = '';
+  document.getElementById('fStatut').value = 'nouveau';
+}
+function closeModal() { document.getElementById('editModal').classList.remove('open'); }
+
+function saveEntry() {
+  const entry = {
+    prenom: document.getElementById('fPrenom').value.trim(),
+    nom: document.getElementById('fNom').value.trim(),
+    email: document.getElementById('fEmail').value.trim(),
+    tel: document.getElementById('fTel').value.trim(),
+    vehicule: document.getElementById('fVehicule').value.trim(),
+    annee: document.getElementById('fAnnee').value.trim(),
+    prestation: document.getElementById('fPresta').value,
+    message: document.getElementById('fMessage').value.trim(),
+    statut: document.getElementById('fStatut').value,
+    note: document.getElementById('fNote').value.trim(),
+  };
+  if (editingId) {
+    const idx = entries.findIndex(x => x.id === editingId);
+    if (idx !== -1) { entries[idx] = { ...entries[idx], ...entry }; }
+  } else {
+    entries.unshift({ id: genId(), date: new Date().toISOString(), ...entry });
+  }
+  saveEntries();
+  closeModal();
+}
+
+// ── MODAL DÉTAIL ──
+function openDetail(id) {
+  const e = entries.find(x => x.id === id);
+  if (!e) return;
+  detailId = id;
+  const nom = [e.prenom, e.nom].filter(Boolean).join(' ') || '—';
+  document.getElementById('dTitle').textContent = nom;
+  document.getElementById('dNom').textContent = nom;
+  document.getElementById('dVehicule').textContent = [e.vehicule, e.annee].filter(Boolean).join(' — ') || '—';
+  document.getElementById('dPresta').textContent = e.prestation || '—';
+  document.getElementById('dMessage').textContent = e.message || 'Aucun message.';
+  document.getElementById('dNote').textContent = e.note || 'Aucune note.';
+  document.getElementById('dDate').textContent = e.date ? new Date(e.date).toLocaleString('fr-FR') : '—';
+
+  const cp = document.getElementById('dContact');
+  cp.innerHTML = '';
+  if (e.email) {
+    const d = document.createElement('div'); d.className = 'contact-pill';
+    d.innerHTML = `<span>Email</span><a href="mailto:${escHtml(e.email)}">${escHtml(e.email)}</a>`; cp.appendChild(d);
+  }
+  if (e.tel) {
+    const d = document.createElement('div'); d.className = 'contact-pill';
+    const clean = e.tel.replace(/\s/g,'');
+    d.innerHTML = `<span>Tel</span><a href="https://wa.me/33${clean.replace(/^0/,'')}" target="_blank">${escHtml(e.tel)}</a>`; cp.appendChild(d);
+  }
+
+  document.getElementById('dEditBtn').onclick = () => openEdit(id);
+  document.getElementById('detailModal').classList.add('open');
+}
+function closeDetail() { document.getElementById('detailModal').classList.remove('open'); }
+
+// ── SUPPRESSION ──
+function askDelete(id) { deletingId = id; document.getElementById('deleteOverlay').classList.add('open'); }
+function closeDelete() { document.getElementById('deleteOverlay').classList.remove('open'); deletingId = null; }
+document.getElementById('deleteConfirmBtn').addEventListener('click', () => {
+  if (!deletingId) return;
+  entries = entries.filter(e => e.id !== deletingId);
+  saveEntries();
+  closeDelete();
+  closeDetail();
+});
+
+// Fermer modals sur clic overlay
+document.getElementById('editModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.getElementById('detailModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeDetail(); });
+
+// ── INIT ──
+loadEntries();
+
+// ── DEMO DATA (à retirer en prod) ──
+if (entries.length === 0) {
+  const demo = [
+    { id: genId(), prenom: 'Jonathan', nom: 'L.', email: 'jonathan@mail.com', tel: '06 12 34 56 78', vehicule: 'BMW 330cd E46', annee: '2004', prestation: 'Stage 2', message: 'Véhicule déjà préparé mécaniquement, downpipe Milltek en place.', statut: 'traite', note: 'Fait le 14/05, client satisfait.', date: new Date(Date.now() - 86400000 * 18).toISOString() },
+    { id: genId(), prenom: 'Mickael', nom: 'B.', email: 'mickael.b@gmail.com', tel: '06 98 76 54 32', vehicule: 'Ford Transit 2.2 TDCI', annee: '2017 — 142 000 km', prestation: 'Suppression FAP', message: 'FAP mécanique déjà retiré, besoin suppression électronique.', statut: 'en-cours', note: 'RDV fixé samedi matin.', date: new Date(Date.now() - 86400000 * 3).toISOString() },
+    { id: genId(), prenom: 'Romain', nom: 'A.', email: 'romain.a@outlook.fr', tel: '07 11 22 33 44', vehicule: 'Peugeot 206 1.6 16V', annee: '2002', prestation: 'Conversion Flexfuel E85', message: 'Je voudrais aussi un stage 2 si possible en même temps.', statut: 'nouveau', note: '', date: new Date(Date.now() - 86400000 * 1).toISOString() },
+    { id: genId(), prenom: 'Thomas', nom: 'C.', email: 'tc@mail.com', tel: '', vehicule: 'BMW 316i E36', annee: '1997', prestation: 'Immo Off / Boitier', message: 'Immo off mal réalisé par quelqu\'un d\'autre, le moteur ne démarre pas.', statut: 'nouveau', note: '', date: new Date().toISOString() },
+  ];
+  entries = demo;
+  saveEntries();
+}
+</script>
+</body>
+</html>
